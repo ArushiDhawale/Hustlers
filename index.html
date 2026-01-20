@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luna - Tracker</title>
+    <title>Luna - Smart Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Added Chart.js for the graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -45,47 +47,79 @@
     <!-- MAIN CONTENT -->
     <main class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center">
         
-        <!-- Welcome Message (Hidden by default) -->
-        <div id="welcomeMsg" class="w-full max-w-4xl mb-6 hidden">
-            <h2 class="text-2xl font-bold text-gray-700">Hello, <span id="userNameDisplay" class="text-purple-600">User</span>! 👋</h2>
+        <!-- Welcome Message -->
+        <div id="welcomeMsg" class="w-full max-w-4xl mb-8 hidden text-center md:text-left">
+            <h2 class="text-5xl font-bold text-gray-700">Hello, <span id="userNameDisplay" class="text-purple-600">User</span>!</h2>
         </div>
 
-        <!-- Input Section -->
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 mb-8 border border-purple-100">
-            <h2 class="text-xl font-bold text-purple-800 mb-4 text-center">Track Your Cycle</h2>
-            <div class="flex flex-col space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Last Period Start Date</label>
-                    <input type="date" id="startDate" class="w-full p-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition bg-purple-50/50">
-                </div>
-                <button onclick="calculateCycle()" class="w-full bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white font-bold py-3 rounded-xl shadow transition transform hover:scale-[1.02]">
-                    Update Insights
-                </button>
-            </div>
-        </div>
-
-        <!-- Dashboard Results -->
-        <div id="dashboard" class="w-full max-w-4xl hidden">
-            <!-- Status Banner -->
-            <div class="bg-gradient-to-r from-purple-600 to-fuchsia-500 rounded-2xl p-6 text-white shadow-lg mb-6 text-center md:text-left md:flex md:justify-between md:items-center">
-                <div>
-                    <p class="text-purple-100 uppercase text-xs font-bold tracking-wider mb-1">Estimated Next Period</p>
-                    <h2 class="text-3xl font-bold" id="nextDate">--</h2>
-                </div>
-                <div class="mt-4 md:mt-0 bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full border border-white/30">
-                    <p class="text-sm font-medium">Current Phase: <strong id="phaseName" class="text-white text-lg ml-1">--</strong></p>
-                </div>
-            </div>
-
-            <!-- Recommendations Grid -->
+        <!-- Smart Diagnostic Form (Integrated from Friend's Code) -->
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 mb-10 border border-purple-100">
+            <h2 class="text-2xl font-extrabold text-purple-800 mb-6 text-center">Health Diagnostic</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-green-400">
-                    <h3 class="font-bold text-lg text-green-600 mb-2"><i class="fas fa-carrot mr-2"></i>Nutrition</h3>
-                    <p id="dietText" class="text-gray-600 text-sm leading-relaxed">--</p>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Last Period Start</label>
+                    <input type="date" id="startDate" class="w-full p-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none bg-purple-50/50">
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-400">
-                    <h3 class="font-bold text-lg text-blue-600 mb-2"><i class="fas fa-running mr-2"></i>Movement</h3>
-                    <p id="routineText" class="text-gray-600 text-sm leading-relaxed">--</p>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Avg Cycle Length (Days)</label>
+                    <input type="number" id="avgLength" placeholder="e.g. 28" class="w-full p-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none bg-purple-50/50">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Typical Pain Intensity (1-10)</label>
+                    <input type="range" id="painIntensity" min="1" max="10" class="w-full h-2 bg-purple-100 rounded-lg appearance-none cursor-pointer accent-purple-600">
+                    <div class="flex justify-between text-[10px] text-gray-400 font-bold mt-1"><span>MILD</span><span>SEVERE</span></div>
+                </div>
+            </div>
+            <button onclick="calculateCycle()" class="w-full mt-6 bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:scale-[1.01]">
+                Generate Smart Insights
+            </button>
+        </div>
+
+        <!-- Advanced Dashboard (Integrated from Friend's Code) -->
+        <div id="dashboard" class="w-full max-w-5xl hidden space-y-8">
+            
+            <!-- Status Banner -->
+            <div class="bg-gradient-to-r from-purple-600 to-fuchsia-500 rounded-2xl p-8 text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <p class="text-purple-100 uppercase text-xs font-bold tracking-widest mb-1">Current Phase</p>
+                    <h2 class="text-4xl font-black" id="phaseName">--</h2>
+                    <p class="mt-2 text-purple-200">Estimated Next Period: <span id="nextDate" class="font-bold text-white">--</span></p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center">
+                    <p class="text-xs font-bold uppercase text-purple-200">Stability Status</p>
+                    <p id="statusBadge" class="text-xl font-bold mt-1">--</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Regulatory Trends Graph -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-6 shadow-xl border border-purple-50">
+                    <h3 class="font-bold text-gray-700 mb-4 flex items-center">
+                        <i class="fas fa-chart-line mr-2 text-purple-400"></i> Regulatory Trends
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="regChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Forecast Cards -->
+                <div class="lg:col-span-5 flex flex-col gap-4">
+                    <!-- Energy -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-green-400">
+                        <h4 class="font-bold text-green-600 uppercase text-xs tracking-widest">Energy Forecast</h4>
+                        <p id="energyText" class="text-gray-600 text-sm mt-2 leading-relaxed">--</p>
+                    </div>
+                    <!-- Pain -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-orange-400">
+                        <h4 class="font-bold text-orange-600 uppercase text-xs tracking-widest">Pain Forecast</h4>
+                        <p id="painText" class="text-gray-600 text-sm mt-2 leading-relaxed">--</p>
+                    </div>
+                    <!-- Nutrition -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-blue-400">
+                        <h4 class="font-bold text-blue-600 uppercase text-xs tracking-widest">Nutrition & Recovery</h4>
+                        <p id="dietText" class="text-gray-600 text-sm mt-2 leading-relaxed">--</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,7 +132,9 @@
     </footer>
 
     <script>
-        // === LOGIN STATE LOGIC ===
+        let myChart;
+
+        // === LOGIN STATE LOGIC (Your existing code) ===
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('luna_is_logged_in');
             const userName = localStorage.getItem('luna_user_name');
@@ -106,13 +142,11 @@
             const welcomeMsg = document.getElementById('welcomeMsg');
 
             if (isLoggedIn === 'true') {
-                // Show Logout Button
                 authSection.innerHTML = `
                     <button onclick="logout()" class="text-purple-100 hover:text-white font-semibold text-sm">
                         Logout <i class="fas fa-sign-out-alt ml-1"></i>
                     </button>
                 `;
-                // Show Welcome Message
                 if (userName) {
                     document.getElementById('userNameDisplay').innerText = userName;
                     welcomeMsg.classList.remove('hidden');
@@ -126,38 +160,111 @@
             window.location.reload();
         }
 
-        // === EXISTING TRACKER LOGIC ===
-        const phaseData = {
-            menstrual: { diet: "Iron-rich foods, warm teas, and dark chocolate to boost mood.", routine: "Rest, light walking, or Yin Yoga. Listen to your body." },
-            follicular: { diet: "Fermented foods (kimchi, yogurt), lean proteins, and seeds.", routine: "High energy! Cardio, running, and creative tasks." },
-            ovulation: { diet: "Antioxidant-rich fruits (berries), fiber, and salmon.", routine: "High intensity workouts (HIIT), strength training." },
-            luteal: { diet: "Complex carbs (sweet potatoes), magnesium-rich foods.", routine: "Wind down. Pilates, yoga, and prioritize sleep." }
-        };
-
+        // === SMART INSIGHTS LOGIC (Merged Friend's Logic) ===
         function calculateCycle() {
-            const input = document.getElementById('startDate').value;
-            if(!input) return alert("Please select a date.");
-            
-            const lastStart = new Date(input);
+            const startDateInput = document.getElementById('startDate').value;
+            const avgLength = parseInt(document.getElementById('avgLength').value);
+            const painLevel = document.getElementById('painIntensity').value;
+
+            if(!startDateInput || !avgLength) return alert("Please fill in your date and average cycle length.");
+
+            const lastStart = new Date(startDateInput);
             const today = new Date();
-            const nextPeriod = new Date(lastStart);
-            nextPeriod.setDate(lastStart.getDate() + 28);
-            
-            const diffTime = today - lastStart;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            const dayOfCycle = diffDays >= 0 ? (diffDays % 28) + 1 : 1; 
+            const diffDays = Math.floor((today - lastStart) / (1000 * 60 * 60 * 24));
+            // Calculate current cycle day based on custom length
+            const dayOfCycle = diffDays >= 0 ? (diffDays % avgLength) + 1 : 1;
 
+            // Phase Logic
             let phase = "";
-            if (dayOfCycle <= 5) phase = "menstrual";
-            else if (dayOfCycle <= 13) phase = "follicular";
-            else if (dayOfCycle === 14) phase = "ovulation";
-            else phase = "luteal";
+            let recommendations = {};
+            
+            if (dayOfCycle <= 5) {
+                phase = "Menstrual";
+                recommendations = { 
+                    energy: "Low energy expected. Prioritize sleep.", 
+                    pain: painLevel > 6 ? "High risk of cramps. Prep heating pads." : "Moderate discomfort likely.", 
+                    diet: "Iron-rich foods, warm teas, and dark chocolate." 
+                };
+            } else if (dayOfCycle <= 13) {
+                phase = "Follicular";
+                recommendations = { 
+                    energy: "Rising power! Estrogen is increasing.", 
+                    pain: "Low pain risk. Great for activity.", 
+                    diet: "Fermented foods (kimchi, yogurt), lean proteins." 
+                };
+            } else if (dayOfCycle === 14) {
+                phase = "Ovulation";
+                recommendations = { 
+                    energy: "Peak vitality and social energy.", 
+                    pain: "Minimal risk. You're at your strongest.", 
+                    diet: "Antioxidant-rich fruits (berries), fiber, and salmon." 
+                };
+            } else {
+                phase = "Luteal";
+                recommendations = { 
+                    energy: "Energy may dip. Progesterone rising.", 
+                    pain: "Possible PMS symptoms starting.", 
+                    diet: "Complex carbs (sweet potatoes), magnesium-rich foods." 
+                };
+            }
 
+            // Update UI
+            document.getElementById('phaseName').innerText = phase;
+            const nextPeriod = new Date(lastStart);
+            nextPeriod.setDate(lastStart.getDate() + avgLength);
             document.getElementById('nextDate').innerText = nextPeriod.toDateString();
-            document.getElementById('phaseName').innerText = phase.charAt(0).toUpperCase() + phase.slice(1);
-            document.getElementById('dietText').innerText = phaseData[phase].diet;
-            document.getElementById('routineText').innerText = phaseData[phase].routine;
-            document.getElementById('dashboard').classList.remove('hidden');
+            
+            document.getElementById('energyText').innerText = recommendations.energy;
+            document.getElementById('painText').innerText = recommendations.pain;
+            document.getElementById('dietText').innerText = recommendations.diet;
+
+            // Status Logic
+            const statusBadge = document.getElementById('statusBadge');
+            if(avgLength > 35 || avgLength < 21) {
+                statusBadge.innerText = "Irregular Pattern";
+                statusBadge.className = "text-xl font-bold mt-1 text-orange-200";
+            } else {
+                statusBadge.innerText = "Regulatory Stable";
+                statusBadge.className = "text-xl font-bold mt-1 text-green-200";
+            }
+
+            // Show Dashboard
+            const dashboard = document.getElementById('dashboard');
+            dashboard.classList.remove('hidden');
+            dashboard.scrollIntoView({ behavior: 'smooth' });
+
+            // Trigger Graph
+            renderGraph(avgLength);
+        }
+
+        function renderGraph(avg) {
+            const ctx = document.getElementById('regChart').getContext('2d');
+            // Simulated history data based on input
+            const history = [avg - 1, avg + 1, avg + 5, avg - 2, avg]; 
+
+            if(myChart) myChart.destroy();
+            
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5'],
+                    datasets: [{
+                        data: history,
+                        borderColor: '#a855f7', // Purple-500
+                        borderWidth: 4,
+                        tension: 0.4,
+                        pointBackgroundColor: (c) => c.raw > 35 || c.raw < 21 ? '#fbbf24' : '#a855f7',
+                        pointRadius: 6,
+                        fill: true,
+                        backgroundColor: 'rgba(168, 85, 247, 0.05)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { suggestedMin: 20, suggestedMax: 45 } }
+                }
+            });
         }
     </script>
 </body>
