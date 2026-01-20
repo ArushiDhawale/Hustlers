@@ -213,49 +213,8 @@
             }
         }
     </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAHUhvl7Jvsg3J3kVHDLcTty0kejLFA624",
-            authDomain: "hustlers-5e1cb.firebaseapp.com",
-            projectId: "hustlers-5e1cb",
-            storageBucket: "hustlers-5e1cb.firebasestorage.app",
-            messagingSenderId: "617293373283",
-            appId: "1:617293373283:web:5c514bf1e2c1eb96d9fd56",
-            measurementId: "G-RYDTL77XBC"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            try {
-                const user = await signInWithEmailAndPassword(auth, email, pass);
-                localStorage.setItem('luna_user_name', user.user.displayName || "User");
-                localStorage.setItem('luna_is_logged_in', 'true');
-                window.location.href = "index.html";
-            } catch (err) { alert("Invalid credentials."); }
-        });
-
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('signupEmail').value;
-            const pass = document.getElementById('signupPass').value;
-            const name = document.getElementById('signupName').value;
-            try {
-                const user = await createUserWithEmailAndPassword(auth, email, pass);
-                await updateProfile(user.user, { displayName: name });
-                localStorage.setItem('luna_user_name', name);
-                localStorage.setItem('luna_is_logged_in', 'true');
-                window.location.href = "index.html";
-            } catch (err) { alert(err.message); }
-        });
-    </script>
+    
+    <!-- Link to external JS -->
+    <script type="module" src="login.js"></script>
 </body>
 </html>
