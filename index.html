@@ -3,44 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CycleSync</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CycleSync - Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: #faf5ff; /* Lilac */ }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>CycleSync Tracker</h1>
+<body class="flex flex-col min-h-screen text-gray-800">
+
+    <!-- HEADER -->
+    <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <i class="fas fa-moon text-2xl"></i>
+                <h1 class="text-2xl font-bold tracking-wide">CycleSync</h1>
+            </a>
+            <nav class="hidden md:flex space-x-6 text-purple-100 font-semibold">
+                <a href="index.html" class="text-white border-b-2 border-white">Home</a>
+                <a href="calendar.html" class="hover:text-white transition">Calendar</a>
+                <a href="education.html" class="hover:text-white transition">Education</a>
+                <a href="support.html" class="hover:text-white transition">Support</a>
+                <a href="journal.html" class="hover:text-white transition">Journal</a>
+            </nav>
+            <div class="md:hidden">
+                <i class="fas fa-bars text-xl"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center">
         
-        <div class="card">
-            <label>Last Period Start Date:</label>
-            <input type="date" id="startDate">
-            <button onclick="calculateCycle()">Track</button>
-        </div>
-
-        <div id="dashboard" class="hidden">
-            <div class="status-card">
-                <h2>Next Period: <span id="nextDate">--</span></h2>
-                <p>Current Phase: <strong id="phaseName">--</strong></p>
-            </div>
-
-            <div class="grid">
-                <div class="card">
-                    <h3>🥗 Diet Plan</h3>
-                    <p id="dietText">--</p>
+        <!-- Input Section -->
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 mb-8 border border-purple-100">
+            <h2 class="text-xl font-bold text-purple-800 mb-4 text-center">Track Your Cycle</h2>
+            <div class="flex flex-col space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Last Period Start Date</label>
+                    <input type="date" id="startDate" class="w-full p-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition bg-purple-50/50">
                 </div>
-                <div class="card">
-                    <h3>🧘 Routine</h3>
-                    <p id="routineText">--</p>
-                </div>
-                <div class="card">
-                    <h3>💊 Meds</h3>
-                    <ul id="medList">
-                        <li><input type="checkbox"> Multivitamin</li>
-                        <li><input type="checkbox"> Water Intake (2L)</li>
-                    </ul>
-                </div>
+                <button onclick="calculateCycle()" class="w-full bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white font-bold py-3 rounded-xl shadow transition transform hover:scale-[1.02]">
+                    Update Insights
+                </button>
             </div>
         </div>
-    </div>
-    <script src="script.js"></script>
+
+        <!-- Dashboard Results -->
+        <div id="dashboard" class="w-full max-w-4xl hidden">
+            <!-- Status Banner -->
+            <div class="bg-gradient-to-r from-purple-600 to-fuchsia-500 rounded-2xl p-6 text-white shadow-lg mb-6 text-center md:text-left md:flex md:justify-between md:items-center">
+                <div>
+                    <p class="text-purple-100 uppercase text-xs font-bold tracking-wider mb-1">Estimated Next Period</p>
+                    <h2 class="text-3xl font-bold" id="nextDate">--</h2>
+                </div>
+                <div class="mt-4 md:mt-0 bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full border border-white/30">
+                    <p class="text-sm font-medium">Current Phase: <strong id="phaseName" class="text-white text-lg ml-1">--</strong></p>
+                </div>
+            </div>
+
+            <!-- Recommendations Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-green-400">
+                    <h3 class="font-bold text-lg text-green-600 mb-2"><i class="fas fa-carrot mr-2"></i>Nutrition</h3>
+                    <p id="dietText" class="text-gray-600 text-sm leading-relaxed">--</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-400">
+                    <h3 class="font-bold text-lg text-blue-600 mb-2"><i class="fas fa-running mr-2"></i>Movement</h3>
+                    <p id="routineText" class="text-gray-600 text-sm leading-relaxed">--</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-purple-100 py-6 mt-auto">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            &copy; 2026 CycleSync Health.
+        </div>
+    </footer>
+
+    <script>
+        const phaseData = {
+            menstrual: { diet: "Iron-rich foods, warm teas, and dark chocolate to boost mood.", routine: "Rest, light walking, or Yin Yoga. Listen to your body." },
+            follicular: { diet: "Fermented foods (kimchi, yogurt), lean proteins, and seeds.", routine: "High energy! Cardio, running, and creative tasks." },
+            ovulation: { diet: "Antioxidant-rich fruits (berries), fiber, and salmon.", routine: "High intensity workouts (HIIT), strength training." },
+            luteal: { diet: "Complex carbs (sweet potatoes), magnesium-rich foods.", routine: "Wind down. Pilates, yoga, and prioritize sleep." }
+        };
+
+        function calculateCycle() {
+            const input = document.getElementById('startDate').value;
+            if(!input) return alert("Please select a date.");
+            
+            const lastStart = new Date(input);
+            const today = new Date();
+            const nextPeriod = new Date(lastStart);
+            nextPeriod.setDate(lastStart.getDate() + 28);
+            
+            const diffTime = today - lastStart;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const dayOfCycle = diffDays >= 0 ? (diffDays % 28) + 1 : 1; 
+
+            let phase = "";
+            if (dayOfCycle <= 5) phase = "menstrual";
+            else if (dayOfCycle <= 13) phase = "follicular";
+            else if (dayOfCycle === 14) phase = "ovulation";
+            else phase = "luteal";
+
+            document.getElementById('nextDate').innerText = nextPeriod.toDateString();
+            document.getElementById('phaseName').innerText = phase.charAt(0).toUpperCase() + phase.slice(1);
+            document.getElementById('dietText').innerText = phaseData[phase].diet;
+            document.getElementById('routineText').innerText = phaseData[phase].routine;
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>

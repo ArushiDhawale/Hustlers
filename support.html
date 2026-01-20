@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycleSync - Support Circle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Nunito', sans-serif; background-color: #faf5ff; } </style>
+</head>
+<body class="flex flex-col min-h-screen text-gray-800">
+
+    <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <i class="fas fa-moon text-2xl"></i>
+                <h1 class="text-2xl font-bold tracking-wide">CycleSync</h1>
+            </a>
+            <nav class="hidden md:flex space-x-6 text-purple-100 font-semibold">
+                <a href="index.html" class="hover:text-white transition">Home</a>
+                <a href="calendar.html" class="hover:text-white transition">Calendar</a>
+                <a href="education.html" class="hover:text-white transition">Education</a>
+                <a href="support.html" class="text-white border-b-2 border-white">Support</a>
+                <a href="journal.html" class="hover:text-white transition">Journal</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+        <div class="bg-indigo-600 rounded-2xl p-8 text-white mb-8 text-center shadow-lg">
+            <h2 class="text-3xl font-bold mb-2">Support Circle</h2>
+            <p class="opacity-90">Connect safely with others in your phase.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Group Card 1 -->
+            <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition border border-purple-50 cursor-pointer">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold uppercase">Menstrual Phase</span>
+                    <span class="text-green-500 text-sm"><i class="fas fa-circle text-xs mr-1"></i> 24 Online</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">The Cozy Corner</h3>
+                <p class="text-gray-500 text-sm mb-4">For those currently needing rest, warmth, and venting about cramps.</p>
+                <div class="flex -space-x-2 overflow-hidden mb-4">
+                    <div class="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"></div>
+                    <div class="w-8 h-8 rounded-full bg-gray-400 border-2 border-white"></div>
+                    <div class="w-8 h-8 rounded-full bg-gray-500 border-2 border-white"></div>
+                </div>
+                <button class="w-full py-2 bg-purple-50 text-purple-600 font-bold rounded-lg hover:bg-purple-100 transition">Join Chat</button>
+            </div>
+
+            <!-- Group Card 2 -->
+            <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition border border-purple-50 cursor-pointer">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-fuchsia-100 text-fuchsia-700 px-3 py-1 rounded-full text-xs font-bold uppercase">Luteal Phase</span>
+                    <span class="text-green-500 text-sm"><i class="fas fa-circle text-xs mr-1"></i> 18 Online</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">PMS Support</h3>
+                <p class="text-gray-500 text-sm mb-4">Feeling emotional? Anxious? Let's talk it out and support each other.</p>
+                <button class="w-full py-2 bg-fuchsia-50 text-fuchsia-600 font-bold rounded-lg hover:bg-fuchsia-100 transition">Join Chat</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
