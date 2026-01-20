@@ -5,55 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luna - Smart Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Added Chart.js for the graph -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Nunito', sans-serif; background-color: #faf5ff; /* Lilac */ }
+        body { font-family: 'Nunito', sans-serif; background-color: #faf5ff; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen text-gray-800">
 
-    <!-- HEADER -->
     <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
                 <i class="fas fa-moon text-2xl"></i>
                 <h1 class="text-2xl font-bold tracking-wide">Luna</h1>
             </a>
-            
             <nav class="hidden md:flex items-center space-x-6 text-purple-100 font-semibold">
                 <a href="index.html" class="text-white border-b-2 border-white">Home</a>
                 <a href="calendar.html" class="hover:text-white transition">Calendar</a>
                 <a href="education.html" class="hover:text-white transition">Education</a>
                 <a href="support.html" class="hover:text-white transition">Support</a>
                 <a href="journal.html" class="hover:text-white transition">Journal</a>
-                
-                <!-- Login/Logout Section -->
+                <a href="insights.html" class="hover:text-white transition">Insights</a>
+
                 <div id="authSection" class="ml-4">
-                    <a href="login.html" class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-gray-100 transition shadow-sm text-sm">
-                        Login
-                    </a>
+                    <a href="login.html" class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-gray-100 transition shadow-sm text-sm">Login</a>
                 </div>
             </nav>
-
-            <div class="md:hidden">
-                <i class="fas fa-bars text-xl"></i>
-            </div>
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center">
+    <main class="flex-grow container mx-auto px-4 py-8">
         
-        <!-- Welcome Message -->
-        <div id="welcomeMsg" class="w-full max-w-4xl mb-8 hidden text-center md:text-left">
-            <h2 class="text-5xl font-bold text-gray-700">Hello, <span id="userNameDisplay" class="text-purple-600">User</span>!</h2>
+        <div id="welcomeMsg" class="w-full max-w-4xl mb-6 hidden mx-auto">
+            <h2 class="text-2xl font-bold text-gray-700 text-center md:text-left">Hello, <span id="userNameDisplay" class="text-purple-600">User</span>! 👋</h2>
         </div>
 
-        <!-- Smart Diagnostic Form (Integrated from Friend's Code) -->
-        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 mb-10 border border-purple-100">
+        <div class="w-full max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-8 mb-10 border border-purple-100">
             <h2 class="text-2xl font-extrabold text-purple-800 mb-6 text-center">Health Diagnostic</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -67,19 +56,16 @@
                 <div class="md:col-span-2">
                     <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Typical Pain Intensity (1-10)</label>
                     <input type="range" id="painIntensity" min="1" max="10" class="w-full h-2 bg-purple-100 rounded-lg appearance-none cursor-pointer accent-purple-600">
-                    <div class="flex justify-between text-[10px] text-gray-400 font-bold mt-1"><span>MILD</span><span>SEVERE</span></div>
                 </div>
             </div>
-            <button onclick="calculateCycle()" class="w-full mt-6 bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:scale-[1.01]">
-                Generate Smart Insights
+            <button onclick="calculateCycle()" class="w-full mt-6 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-black py-4 rounded-2xl shadow-lg hover:from-purple-600 hover:to-fuchsia-600 transition transform hover:scale-[1.01]">
+                GENERATE SMART INSIGHTS
             </button>
         </div>
 
-        <!-- Advanced Dashboard (Integrated from Friend's Code) -->
-        <div id="dashboard" class="w-full max-w-5xl hidden space-y-8">
+        <div id="dashboard" class="w-full max-w-6xl mx-auto hidden space-y-8">
             
-            <!-- Status Banner -->
-            <div class="bg-gradient-to-r from-purple-600 to-fuchsia-500 rounded-2xl p-8 text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="bg-gradient-to-r from-purple-600 to-fuchsia-500 rounded-3xl p-8 text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="text-center md:text-left">
                     <p class="text-purple-100 uppercase text-xs font-bold tracking-widest mb-1">Current Phase</p>
                     <h2 class="text-4xl font-black" id="phaseName">--</h2>
@@ -93,8 +79,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                <!-- Regulatory Trends Graph -->
-                <div class="lg:col-span-7 bg-white rounded-2xl p-6 shadow-xl border border-purple-50">
+                <div class="lg:col-span-7 bg-white rounded-3xl p-6 shadow-xl border border-purple-50">
                     <h3 class="font-bold text-gray-700 mb-4 flex items-center">
                         <i class="fas fa-chart-line mr-2 text-purple-400"></i> Regulatory Trends
                     </h3>
@@ -103,19 +88,15 @@
                     </div>
                 </div>
 
-                <!-- Forecast Cards -->
                 <div class="lg:col-span-5 flex flex-col gap-4">
-                    <!-- Energy -->
                     <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-green-400">
                         <h4 class="font-bold text-green-600 uppercase text-xs tracking-widest">Energy Forecast</h4>
                         <p id="energyText" class="text-gray-600 text-sm mt-2 leading-relaxed">--</p>
                     </div>
-                    <!-- Pain -->
                     <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-orange-400">
                         <h4 class="font-bold text-orange-600 uppercase text-xs tracking-widest">Pain Forecast</h4>
                         <p id="painText" class="text-gray-600 text-sm mt-2 leading-relaxed">--</p>
                     </div>
-                    <!-- Nutrition -->
                     <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-blue-400">
                         <h4 class="font-bold text-blue-600 uppercase text-xs tracking-widest">Nutrition & Recovery</h4>
                         <p id="dietText" class="text-gray-600 text-sm mt-2 leading-relaxed">--</p>
@@ -125,42 +106,26 @@
         </div>
     </main>
 
-    <footer class="bg-white border-t border-purple-100 py-6 mt-auto">
-        <div class="container mx-auto text-center text-gray-500 text-sm">
-            &copy; 2026 Luna Health.
-        </div>
-    </footer>
-
     <script>
         let myChart;
 
-        // === LOGIN STATE LOGIC (Your existing code) ===
+        // === Auth Logic ===
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('luna_is_logged_in');
             const userName = localStorage.getItem('luna_user_name');
-            const authSection = document.getElementById('authSection');
-            const welcomeMsg = document.getElementById('welcomeMsg');
-
-            if (isLoggedIn === 'true') {
-                authSection.innerHTML = `
-                    <button onclick="logout()" class="text-purple-100 hover:text-white font-semibold text-sm">
-                        Logout <i class="fas fa-sign-out-alt ml-1"></i>
-                    </button>
-                `;
-                if (userName) {
-                    document.getElementById('userNameDisplay').innerText = userName;
-                    welcomeMsg.classList.remove('hidden');
-                }
+            if (isLoggedIn === 'true' && userName) {
+                document.getElementById('userNameDisplay').innerText = userName;
+                document.getElementById('welcomeMsg').classList.remove('hidden');
+                document.getElementById('authSection').innerHTML = `<button onclick="logout()" class="text-purple-100 font-semibold text-sm">Logout <i class="fas fa-sign-out-alt ml-1"></i></button>`;
             }
         });
 
         function logout() {
-            localStorage.removeItem('luna_is_logged_in');
-            localStorage.removeItem('luna_user_name');
+            localStorage.clear();
             window.location.reload();
         }
 
-        // === SMART INSIGHTS LOGIC (Merged Friend's Logic) ===
+        // === Smart Insights Logic ===
         function calculateCycle() {
             const startDateInput = document.getElementById('startDate').value;
             const avgLength = parseInt(document.getElementById('avgLength').value);
@@ -171,41 +136,23 @@
             const lastStart = new Date(startDateInput);
             const today = new Date();
             const diffDays = Math.floor((today - lastStart) / (1000 * 60 * 60 * 24));
-            // Calculate current cycle day based on custom length
             const dayOfCycle = diffDays >= 0 ? (diffDays % avgLength) + 1 : 1;
 
             // Phase Logic
             let phase = "";
             let recommendations = {};
-            
             if (dayOfCycle <= 5) {
                 phase = "Menstrual";
-                recommendations = { 
-                    energy: "Low energy expected. Prioritize sleep.", 
-                    pain: painLevel > 6 ? "High risk of cramps. Prep heating pads." : "Moderate discomfort likely.", 
-                    diet: "Iron-rich foods, warm teas, and dark chocolate." 
-                };
+                recommendations = { energy: "Low energy expected. Prioritize sleep.", pain: painLevel > 6 ? "High risk of cramps. Prep heating pads." : "Moderate discomfort likely.", diet: "Iron-rich foods & magnesium." };
             } else if (dayOfCycle <= 13) {
                 phase = "Follicular";
-                recommendations = { 
-                    energy: "Rising power! Estrogen is increasing.", 
-                    pain: "Low pain risk. Great for activity.", 
-                    diet: "Fermented foods (kimchi, yogurt), lean proteins." 
-                };
+                recommendations = { energy: "Rising power! Estrogen is increasing.", pain: "Low pain risk. Great for activity.", diet: "Fermented foods & lean proteins." };
             } else if (dayOfCycle === 14) {
                 phase = "Ovulation";
-                recommendations = { 
-                    energy: "Peak vitality and social energy.", 
-                    pain: "Minimal risk. You're at your strongest.", 
-                    diet: "Antioxidant-rich fruits (berries), fiber, and salmon." 
-                };
+                recommendations = { energy: "Peak vitality and social energy.", pain: "Minimal risk. You're at your strongest.", diet: "Antioxidants & berries." };
             } else {
                 phase = "Luteal";
-                recommendations = { 
-                    energy: "Energy may dip. Progesterone rising.", 
-                    pain: "Possible PMS symptoms starting.", 
-                    diet: "Complex carbs (sweet potatoes), magnesium-rich foods." 
-                };
+                recommendations = { energy: "Energy may dip. Progesterone rising.", pain: "Possible PMS symptoms starting.", diet: "Complex carbs (Sweet potatoes)." };
             }
 
             // Update UI
@@ -228,10 +175,9 @@
                 statusBadge.className = "text-xl font-bold mt-1 text-green-200";
             }
 
-            // Show Dashboard
-            const dashboard = document.getElementById('dashboard');
-            dashboard.classList.remove('hidden');
-            dashboard.scrollIntoView({ behavior: 'smooth' });
+            // Show Dashboard & Scroll
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
 
             // Trigger Graph
             renderGraph(avgLength);
@@ -239,18 +185,16 @@
 
         function renderGraph(avg) {
             const ctx = document.getElementById('regChart').getContext('2d');
-            // Simulated history data based on input
-            const history = [avg - 1, avg + 1, avg + 5, avg - 2, avg]; 
+            const history = [avg - 1, avg + 1, avg + 10, avg - 2, avg]; // Simulated spike at 3rd month
 
             if(myChart) myChart.destroy();
-            
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5'],
                     datasets: [{
                         data: history,
-                        borderColor: '#a855f7', // Purple-500
+                        borderColor: '#a855f7',
                         borderWidth: 4,
                         tension: 0.4,
                         pointBackgroundColor: (c) => c.raw > 35 || c.raw < 21 ? '#fbbf24' : '#a855f7',
@@ -262,7 +206,7 @@
                 options: {
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { y: { suggestedMin: 20, suggestedMax: 45 } }
+                    scales: { y: { suggestedMin: 20, suggestedMax: 50 } }
                 }
             });
         }
