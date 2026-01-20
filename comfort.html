@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycleSync - Comfort Zone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    /* Synced Background Animation */
+    body {
+        transition: background 1s ease;
+        animation: bgBreathe 8s ease-in-out infinite;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    @keyframes bgBreathe {
+        0%, 100% { background-color: #faf5ff; } /* Exhale - Pale */
+        50% { background-color: #e9d5ff; }    /* Inhale - Deeper Purple */
+    }
+
+    /* The Breathing Orb */
+    .breath-orb {
+        animation: orbBreathe 8s ease-in-out infinite;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        background-color: #a855f7;
+    }
+
+    @keyframes orbBreathe {
+        0%, 100% { 
+            transform: scale(1); 
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); 
+        }
+        50% { 
+            transform: scale(1.25); 
+            box-shadow: 0 0 60px rgba(168, 85, 247, 0.6); 
+        }
+    }
+</style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between text-gray-800">
+
+    <header class="w-full p-6 flex justify-between items-center">
+        <a href="index.html" class="text-purple-600 hover:text-purple-800 transition">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        </a>
+        <h1 class="text-xl font-bold text-purple-800 tracking-widest uppercase">Comfort Zone</h1>
+        <div class="w-10"></div> </header>
+
+    <main class="flex flex-col items-center text-center px-4">
+        <div class="breath-orb w-48 h-48 md:w-64 md:h-64 bg-purple-400 rounded-full mb-8 flex items-center justify-center">
+            <span id="breathText" class="text-white font-semibold text-xl">Breathe In</span>
+        </div>
+        <h2 class="text-2xl font-bold text-purple-900 mb-2">Find Your Calm</h2>
+        <p class="text-purple-600 max-w-xs">Rest your eyes, listen to the rhythm, and just exist for a moment.</p>
+    </main>
+
+    <div class="mt-8 mb-4">
+    <p class="text-sm text-purple-400 uppercase tracking-widest mb-4">How are you feeling?</p>
+    <div class="flex flex-wrap justify-center gap-4">
+        <button onclick="applyMood('anxious')" class="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-20">
+            <span class="text-2xl mb-1">😟</span>
+            <span class="text-[10px] font-bold uppercase">Anxious</span>
+        </button>
+
+        <button onclick="applyMood('tired')" class="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-20">
+            <span class="text-2xl mb-1">🥱</span>
+            <span class="text-[10px] font-bold uppercase">Tired</span>
+        </button>
+
+        <button onclick="applyMood('crampy')" class="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-20">
+            <span class="text-2xl mb-1">😣</span>
+            <span class="text-[10px] font-bold uppercase">In Pain</span>
+        </button>
+
+        <button onclick="applyMood('happy')" class="flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-20">
+            <span class="text-2xl mb-1">✨</span>
+            <span class="text-[10px] font-bold uppercase">Energy</span>
+        </button>
+    </div>
+</div>
+
+    <footer class="w-full max-w-xl p-8">
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 border border-white">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 id="trackName" class="font-bold text-gray-800">Lofi Rain</h3>
+                    <p class="text-xs text-gray-500">CycleSync Ambient</p>
+                </div>
+                <i class="fas fa-music text-purple-400 animate-pulse"></i>
+            </div>
+
+            <div class="flex items-center justify-center space-x-8">
+                <button onclick="changeTrack(-1)" class="text-purple-400 hover:text-purple-600"><i class="fas fa-step-backward text-xl"></i></button>
+                <button onclick="togglePlay()" id="playBtn" class="bg-purple-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition">
+                    <i class="fas fa-play text-2xl" id="playIcon"></i>
+                </button>
+                <button onclick="changeTrack(1)" class="text-purple-400 hover:text-purple-600"><i class="fas fa-step-forward text-xl"></i></button>
+            </div>
+
+            <div class="mt-6 flex justify-center space-x-2">
+                <button onclick="selectTrack(0)" class="px-3 py-1 bg-purple-100 rounded-full text-xs hover:bg-purple-200">Rain</button>
+                <button onclick="selectTrack(1)" class="px-3 py-1 bg-purple-100 rounded-full text-xs hover:bg-purple-200">Forest</button>
+                <button onclick="selectTrack(2)" class="px-3 py-1 bg-purple-100 rounded-full text-xs hover:bg-purple-200">Piano</button>
+            </div>
+        </div>
+    </footer>
+    <script>
+    const moods = {
+    anxious: {
+        color: "#cffafe", // Light Blue
+        trackName: "Slow Ocean Waves",
+        trackUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        breathSpeed: 10 // seconds
+    },
+    tired: {
+        color: "#f3e8ff", // Soft Purple
+        trackName: "Midnight Lofi",
+        trackUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        breathSpeed: 8
+    },
+    crampy: {
+        color: "#ffedd5", // Warm Peach
+        trackName: "Deep Resonance",
+        trackUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        breathSpeed: 7
+    },
+    happy: {
+        color: "#dcfce7", // Fresh Green
+        trackName: "Morning Piano",
+        trackUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+        breathSpeed: 5
+    }
+};
+
+let audio = new Audio();
+let isPlaying = false;
+let breathInterval; // Stores the timer so we can reset it
+const breathText = document.getElementById('breathText');
+
+// The function that handles the text flip
+function startBreathingLogic(seconds) {
+    // Clear any existing timer first
+    if (breathInterval) clearInterval(breathInterval);
+
+    const msPerPhase = (seconds / 2) * 1000;
+
+    const flipText = () => {
+        breathText.innerText = "Breathe In";
+        setTimeout(() => {
+            breathText.innerText = "Breathe Out";
+        }, msPerPhase);
+    };
+
+    flipText(); // Run once immediately
+    breathInterval = setInterval(flipText, seconds * 1000);
+}
+
+function applyMood(moodKey) {
+    const selected = moods[moodKey];
+    const orb = document.querySelector('.breath-orb');
+    
+    // 1. Update the Speed of Animations
+    orb.style.animationDuration = selected.breathSpeed + "s";
+    document.body.style.animationDuration = selected.breathSpeed + "s";
+    
+    // 2. Update the Text Sync
+    startBreathingLogic(selected.breathSpeed);
+
+    // 3. Update the Background Color
+    // We override the animation's base color by injecting a small style change
+    document.body.style.backgroundColor = selected.color;
+
+    // 4. Update Music
+    audio.src = selected.trackUrl;
+    document.getElementById('trackName').innerText = selected.trackName;
+    if (isPlaying) audio.play();
+}
+
+function togglePlay() {
+    const icon = document.getElementById('playIcon');
+    if (isPlaying) {
+        audio.pause();
+        icon.classList.replace('fa-pause', 'fa-play');
+    } else {
+        if(!audio.src) applyMood('tired'); 
+        audio.play();
+        icon.classList.replace('fa-play', 'fa-pause');
+    }
+    isPlaying = !isPlaying;
+}
+
+// Start default breathing on page load
+startBreathingLogic(8);
+</script>
+</body>
+</html>

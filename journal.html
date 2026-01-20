@@ -27,51 +27,78 @@
         </div>
     </header>
 
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-2xl">
+    <main class="flex-grow container mx-auto px-4 py-8 flex gap-6">
+    
+    <div class="flex-grow max-w-2xl">
         <div class="flex justify-between items-end mb-6">
             <div>
                 <h2 class="text-3xl font-bold text-purple-800">My Journal</h2>
-                <p class="text-gray-500 text-sm mt-1"><i class="fas fa-lock mr-1"></i> Private & stored locally on your device.</p>
+                <p class="text-gray-500 text-sm mt-1"><i class="fas fa-lock mr-1"></i> Private & local.</p>
             </div>
             <span id="saveStatus" class="text-green-600 text-sm font-semibold opacity-0 transition">Saved!</span>
         </div>
 
         <div class="bg-white rounded-2xl shadow-xl p-6 border border-purple-50">
-            <input type="text" id="entryTitle" placeholder="Title (e.g., Feeling energetic today...)" class="w-full text-xl font-bold text-gray-700 mb-4 border-b border-gray-200 focus:outline-none focus:border-purple-500 pb-2 bg-transparent placeholder-gray-300">
-            
-            <textarea id="entryContent" class="w-full h-64 p-4 bg-purple-50 rounded-xl border-none focus:ring-2 focus:ring-purple-200 resize-none text-gray-700 leading-relaxed" placeholder="How are you feeling mentally and physically?"></textarea>
-            
+            <input type="text" id="entryTitle" placeholder="Title..." class="w-full text-xl font-bold mb-4 border-b focus:outline-none focus:border-purple-500 pb-2 bg-transparent">
+            <textarea id="entryContent" class="w-full h-48 p-4 bg-purple-50 rounded-xl border-none focus:ring-2 focus:ring-purple-200 resize-none" placeholder="How are you feeling?"></textarea>
             <div class="mt-4 flex justify-end">
-                <button onclick="saveEntry()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg shadow transition transform hover:scale-105">
-                    <i class="fas fa-save mr-2"></i> Save Entry
-                </button>
+                <button onclick="saveEntry()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg shadow transition transform hover:scale-105">Save Entry</button>
             </div>
         </div>
+    </div>
 
-        <div class="mt-8">
-            <h3 class="text-lg font-bold text-gray-600 mb-4">Recent Entries</h3>
-            <div class="space-y-3">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-purple-50 flex justify-between items-center cursor-pointer hover:bg-purple-50 transition group">
-                    <div>
-                        <h4 class="font-bold text-gray-800 group-hover:text-purple-700 transition">Cramps are bad today</h4>
-                        <p class="text-xs text-gray-400">Oct 12, 2025</p>
-                    </div>
-                    <i class="fas fa-chevron-right text-gray-300 group-hover:text-purple-400 transition"></i>
-                </div>
+    <aside class="hidden lg:flex flex-col w-80 bg-white rounded-2xl shadow-xl border border-purple-100 overflow-hidden" style="height: 600px;">
+        <div class="bg-purple-600 p-4 text-white">
+            <h3 class="font-bold flex items-center"><i class="fas fa-users mr-2"></i> Anonymous Community</h3>
+            <select id="roomSelect" onchange="joinCommunity()" class="mt-2 w-full bg-purple-500 text-sm border-none rounded p-1 focus:ring-0">
+                <option value="General">General Chat</option>
+                <option value="Support">Peer Support</option>
+                <option value="Tips">Daily Tips</option>
+            </select>
+        </div>
+        
+        <div id="chatMessages" class="flex-grow p-4 overflow-y-auto text-sm space-y-3 bg-gray-50">
+            <p class="text-gray-400 italic text-center">Select a room to start chatting anonymously...</p>
+        </div>
+
+        <div class="p-3 border-t">
+            <div class="flex gap-2">
+                <input type="text" id="chatInput" placeholder="Say something..." class="flex-grow text-xs p-2 border rounded-lg focus:outline-purple-500">
+                <button onclick="sendMsg()" class="text-purple-600 hover:scale-110 transition"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
-    </main>
+    </aside>
+</main>
 
-    <script>
-        function saveEntry() {
-            const title = document.getElementById('entryTitle').value;
-            const content = document.getElementById('entryContent').value;
-            if(title || content) {
-                const status = document.getElementById('saveStatus');
-                status.classList.remove('opacity-0');
-                setTimeout(() => { status.classList.add('opacity-0'); }, 2000);
-            }
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    // 1. Connect to your backend (replace with your server URL later)
+    const socket = io('http://localhost:3000'); 
+    let currentRoom = "General";
+
+    function joinCommunity() {
+        currentRoom = document.getElementById('roomSelect').value;
+        document.getElementById('chatMessages').innerHTML = `<p class="text-center text-purple-400">Joined ${currentRoom}</p>`;
+        socket.emit('join_community', currentRoom);
+    }
+
+    function sendMsg() {
+        const input = document.getElementById('chatInput');
+        if(input.value) {
+            socket.emit('send_chat', { room: currentRoom, message: input.value });
+            input.value = '';
         }
-    </script>
+    }
+
+    socket.on('receive_chat', (data) => {
+        const msgHtml = `<div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-purple-400">
+            <span class="block font-bold text-[10px] text-purple-600">${data.user}</span>
+            <span class="text-gray-700">${data.text}</span>
+        </div>`;
+        const container = document.getElementById('chatMessages');
+        container.innerHTML += msgHtml;
+        container.scrollTop = container.scrollHeight;
+    });
+</script>
 </body>
 </html>
