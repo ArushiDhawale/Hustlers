@@ -12,6 +12,7 @@
         .calendar-day { min-height: 90px; }
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .cursor-pointer { cursor: pointer; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen text-gray-800">
@@ -20,7 +21,8 @@
     <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
-               <img src="logo.png" alt="Logo" class="h-8 w-auto">
+                <i class="fas fa-moon text-2xl"></i>
+                <h1 class="text-2xl font-bold tracking-wide">Luna</h1>
             </a>
             
             <nav class="hidden md:flex items-center space-x-6 text-purple-100 font-semibold">
@@ -30,24 +32,25 @@
                 <a href="support.html" class="hover:text-white transition">Support</a>
                 <a href="journal.html" class="hover:text-white transition">Journal</a>
                 
-                <!-- Login/Logout Section -->
                 <div id="authSection" class="ml-4">
-                    <a href="login.html" class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-gray-100 transition shadow-sm text-sm">
-                        Login
-                    </a>
+                     <span id="userStatus" class="text-xs font-bold bg-purple-600 px-3 py-1 rounded-full hidden">Loading...</span>
                 </div>
             </nav>
-
-            <div class="md:hidden">
-                <i class="fas fa-bars text-xl"></i>
-            </div>
         </div>
     </header>
 
     <main class="flex-grow container mx-auto px-4 py-8">
         <h2 class="text-3xl font-bold text-purple-800 mb-6 text-center">Monthly Overview</h2>
         
-        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-6 border border-purple-100">
+        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-6 border border-purple-100 relative">
+             <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="absolute inset-0 bg-white/60 z-10 hidden flex items-center justify-center rounded-2xl backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin text-purple-600 text-4xl mb-2"></i>
+                    <p class="text-purple-800 font-bold">Syncing...</p>
+                </div>
+            </div>
+
             <!-- Calendar Controls -->
             <div class="flex justify-between items-center mb-6">
                 <h3 id="currentMonthYear" class="text-2xl font-bold text-gray-700 w-48">--</h3>
@@ -80,46 +83,188 @@
                 <!-- Days injected by JS -->
             </div>
 
-            <!-- Legend -->
-            <div class="mt-8 flex flex-wrap gap-4 text-sm justify-center border-t border-purple-100 pt-6">
-                <div class="flex items-center"><span class="w-3 h-3 bg-purple-500 rounded-full mr-2"></span> Period</div>
-                <div class="flex items-center"><span class="w-3 h-3 bg-fuchsia-300 rounded-full mr-2"></span> Ovulation</div>
-                <div class="flex items-center"><span class="w-3 h-3 bg-purple-200 border border-purple-400 rounded-full mr-2"></span> Today</div>
+            <!-- Legend & Manual Save -->
+            <div class="mt-8 flex flex-col md:flex-row justify-between items-center border-t border-purple-100 pt-6 gap-4">
+                <div class="flex flex-wrap gap-4 text-sm justify-center">
+                    <div class="flex items-center"><span class="w-3 h-3 bg-purple-500 rounded-full mr-2"></span> Period</div>
+                    <div class="flex items-center"><span class="w-3 h-3 bg-fuchsia-300 rounded-full mr-2"></span> Ovulation</div>
+                    <div class="flex items-center"><span class="w-3 h-3 bg-purple-200 border border-purple-400 rounded-full mr-2"></span> Today</div>
+                </div>
+                
+                <button onclick="forceSync()" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold hover:bg-purple-700 transition shadow-md flex items-center text-sm">
+                    <i class="fas fa-sync-alt mr-2"></i> Save & Sync
+                </button>
             </div>
+        </div>
+        
+        <div id="statusMsg" class="text-center mt-4 text-sm font-bold h-6"></div>
+
+        <!-- Debug Section: Verification -->
+        <div class="max-w-4xl mx-auto mt-8 p-4 bg-gray-100 rounded-xl text-xs text-gray-500 font-mono hidden" id="debugSection">
+            <h4 class="font-bold mb-2">Database Verification (Saved Dates):</h4>
+            <p id="dbDatesList">Loading...</p>
+        </div>
+        <div class="text-center mt-2">
+            <button onclick="toggleDebug()" class="text-xs text-gray-400 underline">Show Database Check</button>
         </div>
     </main>
 
-    <script>
-        // === HEADER AUTH LOGIC ===
-        document.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = localStorage.getItem('luna_is_logged_in');
-            const authSection = document.getElementById('authSection');
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            if (isLoggedIn === 'true' && authSection) {
-                authSection.innerHTML = `
-                    <button onclick="logout()" class="text-purple-100 hover:text-white font-semibold text-sm">
-                        Logout <i class="fas fa-sign-out-alt ml-1"></i>
-                    </button>
-                `;
+        // --- 1. Initialize Firebase ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyAvYE3ZApemLjdwUoHQaXLpdOO3Yu2FxOQ",
+          authDomain: "luna-1ec03.firebaseapp.com",
+          projectId: "luna-1ec03",
+          storageBucket: "luna-1ec03.firebasestorage.app",
+          messagingSenderId: "954083602003",
+          appId: "1:954083602003:web:cba02aabad304b69eb20a6",
+          measurementId: "G-NNV9QZ87VH"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        let currentUser = null;
+        let loggedDates = new Set(); // Stores "YYYY-MM-DD"
+        let ovulationDates = new Set(); // Calculated on the fly
+
+        // Global Date State
+        let currentCalDate = new Date();
+
+        // --- 2. Auth Logic ---
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth failed:", error);
+            }
+        };
+
+        initAuth();
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const status = document.getElementById('userStatus');
+                status.textContent = "Logged In";
+                status.classList.remove('hidden');
+                
+                await loadPeriodDates(user.uid);
+                renderCalendar();
+            } else {
+                currentUser = null;
             }
         });
 
-        function logout() {
-            localStorage.removeItem('luna_is_logged_in');
-            localStorage.removeItem('luna_user_name');
-            window.location.href = 'index.html';
+        // --- 3. Data Logic ---
+        
+        async function loadPeriodDates(userId) {
+            showLoading(true);
+            loggedDates.clear();
+            const debugList = [];
+            try {
+                const q = query(collection(db, 'artifacts', appId, 'users', userId, 'period_dates'));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    loggedDates.add(doc.id);
+                    debugList.push(doc.id); // Add to debug list
+                });
+                
+                // Update Debug UI
+                document.getElementById('dbDatesList').innerText = debugList.sort().join(', ') || "No dates saved yet.";
+
+                calculateOvulation();
+            } catch (error) {
+                console.error("Error loading dates:", error);
+                showStatus("Error loading calendar data", "text-red-500");
+            } finally {
+                showLoading(false);
+                renderCalendar(); // Ensure render happens after load
+            }
         }
 
-        // === CALENDAR LOGIC ===
-        let currentDate = new Date();
-        const mockLastPeriodStart = new Date();
-        mockLastPeriodStart.setDate(2); // Mock start date: 2nd of current month
-        const cycleLength = 28;
-        const periodDuration = 5;
+        function calculateOvulation() {
+            ovulationDates.clear();
+            const sortedDates = Array.from(loggedDates).sort();
+            
+            sortedDates.forEach(dateStr => {
+                const date = new Date(dateStr);
+                const prevDate = new Date(date);
+                prevDate.setDate(date.getDate() - 1);
+                const prevDateStr = prevDate.toISOString().split('T')[0];
 
+                if (!loggedDates.has(prevDateStr)) {
+                    const ovDate = new Date(date);
+                    ovDate.setDate(date.getDate() + 13);
+                    const ovStr = ovDate.toISOString().split('T')[0];
+                    ovulationDates.add(ovStr);
+                }
+            });
+        }
+
+        window.toggleDate = async function(year, month, day) {
+            if (!currentUser) return alert("Please wait for login...");
+
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'period_dates', dateStr);
+
+            // OPTIMISTIC UPDATE
+            const wasLogged = loggedDates.has(dateStr);
+            if (wasLogged) {
+                loggedDates.delete(dateStr);
+            } else {
+                loggedDates.add(dateStr);
+            }
+            
+            calculateOvulation();
+            renderCalendar();
+
+            // Background Save
+            try {
+                if (wasLogged) {
+                    await deleteDoc(docRef);
+                } else {
+                    await setDoc(docRef, { 
+                        date: dateStr, 
+                        year: year, 
+                        month: month + 1, 
+                        day: day,
+                        timestamp: new Date()
+                    });
+                }
+                updateDebugView(); // Refresh debug list silently
+            } catch (error) {
+                console.error("Error toggling date:", error);
+                // Rollback
+                if (wasLogged) loggedDates.add(dateStr);
+                else loggedDates.delete(dateStr);
+                renderCalendar();
+                showStatus("Failed to save. Check connection.", "text-red-500");
+            }
+        }
+        
+        window.forceSync = async function() {
+            if(!currentUser) return;
+            showStatus("Syncing with cloud...", "text-blue-500");
+            await loadPeriodDates(currentUser.uid);
+            showStatus("All data synced successfully!", "text-green-600");
+        }
+
+        // --- 4. Calendar Rendering Logic ---
+        
         function renderCalendar() {
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
+            const year = currentCalDate.getFullYear();
+            const month = currentCalDate.getMonth();
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('currentMonthYear').innerText = `${monthNames[month]} ${year}`;
 
@@ -129,9 +274,6 @@
 
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = "";
-
-            const predictedPeriodDays = getPredictedPeriodDays(year, month);
-            const predictedOvulationDay = getPredictedOvulationDay(year, month);
 
             // Empty slots
             for (let i = 0; i < firstDay; i++) {
@@ -143,53 +285,76 @@
             // Days
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayCell = document.createElement('div');
-                dayCell.className = "calendar-day border rounded-xl p-2 relative hover:shadow-md transition flex flex-col justify-between fade-in bg-white border-purple-50";
-
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                let classes = "calendar-day border rounded-xl p-2 relative transition flex flex-col justify-between fade-in cursor-pointer select-none ";
+                let content = `<span class="text-sm font-bold text-gray-600">${day}</span>`;
+                
+                const isLogged = loggedDates.has(dateStr);
+                const isOvulation = ovulationDates.has(dateStr);
                 const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-                if (isToday) dayCell.classList.add("bg-purple-50", "border-purple-300", "ring-2", "ring-purple-200");
 
-                if (predictedPeriodDays.includes(day)) {
-                    dayCell.classList.add("bg-purple-100", "border-purple-200");
-                    dayCell.innerHTML = `<span class="text-sm font-bold text-purple-700">${day}</span><div class="flex justify-center mt-1"><i class="fas fa-tint text-purple-500 text-lg"></i></div>`;
-                } else if (day === predictedOvulationDay) {
-                    dayCell.classList.add("bg-fuchsia-50", "border-fuchsia-200");
-                    dayCell.innerHTML = `<span class="text-sm font-bold text-fuchsia-700">${day}</span><div class="flex justify-center mt-1"><i class="fas fa-star text-fuchsia-400 text-sm animate-pulse"></i></div><span class="text-[10px] text-center text-fuchsia-500 font-bold">Ovulation</span>`;
-                } else {
-                    dayCell.innerHTML = `<span class="text-sm font-bold text-gray-600">${day}</span>`;
+                if (isLogged) {
+                    classes += "bg-purple-100 border-purple-200 hover:bg-purple-200 shadow-sm ";
+                    content = `<span class="text-sm font-bold text-purple-700">${day}</span>
+                               <div class="flex justify-center mt-1"><i class="fas fa-tint text-purple-500 text-lg"></i></div>`;
+                } 
+                else if (isOvulation) {
+                    classes += "bg-fuchsia-50 border-fuchsia-200 hover:bg-fuchsia-100 ";
+                    content = `<span class="text-sm font-bold text-fuchsia-700">${day}</span>
+                               <div class="flex justify-center mt-1"><i class="fas fa-star text-fuchsia-400 text-sm animate-pulse"></i></div>
+                               <span class="text-[10px] text-center text-fuchsia-500 font-bold">Ovulation</span>`;
                 }
+                else {
+                    classes += "bg-white border-purple-50 hover:shadow-md hover:border-purple-200 ";
+                }
+
+                if (isToday) {
+                    classes += "bg-purple-50 border-purple-300 ring-2 ring-purple-200 ";
+                }
+
+                dayCell.className = classes;
+                dayCell.innerHTML = content;
+                dayCell.onclick = () => window.toggleDate(year, month, day);
+
                 grid.appendChild(dayCell);
             }
         }
 
-        function getPredictedPeriodDays(year, month) {
-            let days = [];
-            const checkDate = new Date(year, month, 1);
-            while (checkDate.getMonth() === month) {
-                const diffTime = checkDate - mockLastPeriodStart;
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                let cycleDay = diffDays % cycleLength;
-                if (cycleDay < 0) cycleDay += cycleLength;
-                if (cycleDay >= 0 && cycleDay < periodDuration) days.push(checkDate.getDate());
-                checkDate.setDate(checkDate.getDate() + 1);
-            }
-            return days;
+        // --- Helper Functions ---
+        window.changeMonth = (step) => { 
+            currentCalDate.setMonth(currentCalDate.getMonth() + step); 
+            renderCalendar(); 
+        };
+        window.jumpToToday = () => { 
+            currentCalDate = new Date(); 
+            renderCalendar(); 
+        };
+        
+        window.toggleDebug = () => {
+            const el = document.getElementById('debugSection');
+            el.classList.toggle('hidden');
         }
 
-        function getPredictedOvulationDay(year, month) {
-            const checkDate = new Date(year, month, 1);
-            while (checkDate.getMonth() === month) {
-                const diffTime = checkDate - mockLastPeriodStart;
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                let cycleDay = diffDays % cycleLength;
-                if (cycleDay < 0) cycleDay += cycleLength;
-                if (cycleDay === 13) return checkDate.getDate();
-                checkDate.setDate(checkDate.getDate() + 1);
-            }
-            return -1;
+        function updateDebugView() {
+            // Helper to just update the text list from memory
+            const list = Array.from(loggedDates).sort().join(', ') || "No dates saved yet.";
+            document.getElementById('dbDatesList').innerText = list;
         }
 
-        function changeMonth(step) { currentDate.setMonth(currentDate.getMonth() + step); renderCalendar(); }
-        function jumpToToday() { currentDate = new Date(); renderCalendar(); }
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if(show) overlay.classList.remove('hidden');
+            else overlay.classList.add('hidden');
+        }
+
+        function showStatus(msg, colorClass) {
+            const el = document.getElementById('statusMsg');
+            el.innerText = msg;
+            el.className = "text-center mt-4 text-sm font-bold h-6 " + colorClass;
+            setTimeout(() => { el.innerText = ""; }, 3000);
+        }
+
         renderCalendar();
     </script>
 </body>
