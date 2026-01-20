@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is This Normal? - Luna</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Nunito', sans-serif; background-color: #f9fafb; } 
+        .color-card { transition: all 0.2s ease-in-out; }
+        .color-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-700">
+
+    <header class="bg-white text-purple-900 shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 group">
+                <i class="fas fa-moon text-2xl text-purple-600 group-hover:text-purple-700 transition"></i>
+                <h1 class="text-2xl font-bold tracking-wide group-hover:text-purple-700 transition">Luna</h1>
+            </a>
+            <nav class="hidden md:flex space-x-8 text-slate-500 font-medium text-sm">
+                <a href="index.html" class="hover:text-purple-600 transition">Home</a>
+                <a href="education.html" class="text-purple-600 font-bold">Education</a>
+                <a href="calendar.html" class="hover:text-purple-600 transition">Calendar</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-12 max-w-4xl">
+        
+        <div class="mb-8">
+            <a href="education.html" class="text-slate-400 hover:text-purple-600 text-sm font-semibold transition flex items-center">
+                <i class="fas fa-arrow-left mr-2 text-xs"></i> Back to Education Hub
+            </a>
+        </div>
+
+        <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-12">
+            
+            <header class="border-b border-gray-100 pb-8 mb-10">
+                <span class="text-purple-600 font-bold tracking-wider text-xs uppercase mb-2 block">Health & Wellness</span>
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Is This Normal?</h1>
+                
+                <div class="w-full">
+                    <p class="text-lg text-slate-600 leading-relaxed font-light mb-4">
+                        If you’ve ever looked at your period and wondered “Is this normal?” — you’re not alone. Menstrual blood can vary in color, flow, and duration from person to person, and even from cycle to cycle.
+                    </p>
+                    <p class="text-slate-600 leading-relaxed font-light">
+                        Most of these changes are completely normal. Understanding what’s typical can help you feel more confident about your body — and know when it’s time to seek medical advice.
+                    </p>
+                </div>
+            </header>
+
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center">
+                    <i class="fas fa-palette text-purple-200 mr-3 text-xl"></i> Period Blood Color Guide
+                </h2>
+                <p class="text-sm text-slate-500 mb-6 italic">Menstrual blood doesn’t always look the same, and that’s okay.</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="color-card bg-slate-50 p-6 rounded border border-slate-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-2 h-full bg-red-500"></div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2 pl-4">Bright Red</h3>
+                        <p class="text-slate-600 text-sm pl-4">Common during the first few days. usually means a healthy, steady flow.</p>
+                    </div>
+
+                    <div class="color-card bg-slate-50 p-6 rounded border border-slate-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-2 h-full bg-red-900"></div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2 pl-4">Dark Red or Brown</h3>
+                        <p class="text-slate-600 text-sm pl-4">Often seen towards the end. This is older blood that took longer to leave the uterus — completely normal.</p>
+                    </div>
+
+                    <div class="color-card bg-slate-50 p-6 rounded border border-slate-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-2 h-full bg-red-200"></div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2 pl-4">Pink</h3>
+                        <p class="text-slate-600 text-sm pl-4">Can happen when blood mixes with cervical fluid. Often appears during lighter flow days.</p>
+                    </div>
+
+                    <div class="color-card bg-red-50 p-6 rounded border border-red-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-2 h-full bg-gray-400"></div>
+                        <h3 class="font-bold text-red-800 text-lg mb-2 pl-4 flex items-center">
+                            Gray / Unusual <i class="fas fa-exclamation-circle ml-2 text-sm"></i>
+                        </h3>
+                        <p class="text-red-700 text-sm pl-4">**This is not normal** and could indicate an infection. It’s best to consult a doctor immediately.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid md:grid-cols-2 gap-10 mb-12">
+                
+                <section>
+                    <h2 class="text-xl font-bold text-slate-900 mb-4">Blood Clots: Should You Worry?</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">Small Clots (Coin-sized)</h4>
+                                <p class="text-slate-600 text-sm">Common during heavy flow days and usually harmless.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-question-circle text-purple-500 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">Large or Frequent Clots</h4>
+                                <p class="text-slate-600 text-sm">If clots are large, painful, or happen often, it may be a sign of hormonal imbalance. A consultation is recommended.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold text-slate-900 mb-4">Duration & Flow</h2>
+                    <div class="bg-purple-50 rounded-lg p-5 border border-purple-100">
+                        <ul class="space-y-3 text-sm text-slate-700">
+                            <li class="flex items-center"><i class="far fa-calendar-alt text-purple-400 mr-3 w-5"></i> Typical duration: <strong>3 to 7 days</strong>.</li>
+                            <li class="flex items-center"><i class="fas fa-tint text-purple-400 mr-3 w-5"></i> Flow usually heavier in first few days.</li>
+                            <li class="flex items-center"><i class="fas fa-exclamation text-purple-400 mr-3 w-5"></i> Seek advice if soaking pads every 1-2 hours.</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <section class="bg-white border border-slate-200 rounded-xl overflow-hidden mb-10 p-8">
+                <h2 class="text-xl font-bold text-slate-900 mb-3">When Should You See a Doctor?</h2>
+                <p class="text-sm text-slate-500 mb-6">It’s okay to ask for help. Doctors hear these concerns every day. No embarrassment needed.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 font-medium bg-slate-50 p-6 rounded-lg">
+                    <div class="flex items-center"><i class="fas fa-angle-right text-purple-400 mr-3"></i> Severe or worsening pain</div>
+                    <div class="flex items-center"><i class="fas fa-angle-right text-purple-400 mr-3"></i> Extremely heavy bleeding</div>
+                    <div class="flex items-center"><i class="fas fa-angle-right text-purple-400 mr-3"></i> Periods stop for months without pregnancy</div>
+                    <div class="flex items-center"><i class="fas fa-angle-right text-purple-400 mr-3"></i> Strong odor or unusual discharge</div>
+                    <div class="flex items-center col-span-1 md:col-span-2"><i class="fas fa-angle-right text-purple-400 mr-3"></i> Symptoms that feel “not normal for you”</div>
+                </div>
+                <p class="mt-4 text-xs text-slate-400 uppercase tracking-wide text-center">Your comfort and health matter — there’s no shame in taking care of yourself.</p>
+            </section>
+
+            <div class="bg-purple-600 text-white rounded-lg p-8 text-center shadow-lg">
+                <h3 class="text-xl font-bold mb-3"><i class="fas fa-heart mr-2"></i> A Gentle Reminder</h3>
+                <p class="text-purple-100 max-w-2xl mx-auto leading-relaxed">
+                    Every body is different. What’s normal for someone else may not be normal for you — and that’s okay. Paying attention to patterns over time is more important than comparing yourself to others. Luna is here to help you track changes and feel confident.
+                </p>
+            </div>
+
+        </article>
+    </main>
+</body>
+</html>
