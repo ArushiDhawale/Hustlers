@@ -26,19 +26,32 @@
         </div>
     </div>
 
+    <!-- HEADER -->
     <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
                 <i class="fas fa-moon text-2xl"></i>
                 <h1 class="text-2xl font-bold tracking-wide">Luna</h1>
             </a>
-            <nav class="hidden md:flex space-x-6 text-purple-100 font-semibold">
+            
+            <nav class="hidden md:flex items-center space-x-6 text-purple-100 font-semibold">
                 <a href="index.html" class="hover:text-white transition">Home</a>
                 <a href="calendar.html" class="hover:text-white transition">Calendar</a>
                 <a href="education.html" class="hover:text-white transition">Education</a>
                 <a href="support.html" class="text-white border-b-2 border-white">Support</a>
                 <a href="journal.html" class="hover:text-white transition">Journal</a>
+                
+                <!-- Login/Logout Section -->
+                <div id="authSection" class="ml-4">
+                    <a href="login.html" class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-gray-100 transition shadow-sm text-sm">
+                        Login
+                    </a>
+                </div>
             </nav>
+
+            <div class="md:hidden">
+                <i class="fas fa-bars text-xl"></i>
+            </div>
         </div>
     </header>
 
@@ -86,21 +99,21 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // ==========================================
-        // PASTE YOUR CONFIG HERE
+        // CONFIGURATION
         // ==========================================
         const firebaseConfig = {
-  apiKey: "AIzaSyAvYE3ZApemLjdwUoHQaXLpdOO3Yu2FxOQ",
-  authDomain: "luna-1ec03.firebaseapp.com",
-  projectId: "luna-1ec03",
-  storageBucket: "luna-1ec03.firebasestorage.app",
-  messagingSenderId: "954083602003",
-  appId: "1:954083602003:web:cba02aabad304b69eb20a6",
-  measurementId: "G-NNV9QZ87VH"
-};
+            apiKey: "AIzaSyAvYE3ZApemLjdwUoHQaXLpdOO3Yu2FxOQ",
+            authDomain: "luna-1ec03.firebaseapp.com",
+            projectId: "luna-1ec03",
+            storageBucket: "luna-1ec03.firebasestorage.app",
+            messagingSenderId: "954083602003",
+            appId: "1:954083602003:web:cba02aabad304b69eb20a6",
+            measurementId: "G-NNV9QZ87VH"
+        };
 
         if (!firebaseConfig.apiKey) {
             document.getElementById('messagesList').innerHTML = 
-                '<div class="text-center text-red-500 p-4">Error: Firebase Config missing.<br>Please open support.html and paste your API keys.</div>';
+                '<div class="text-center text-red-500 p-4">Error: Firebase Config missing.<br>Please check code.</div>';
             throw new Error("Firebase Config missing");
         }
 
@@ -117,9 +130,27 @@
         const displayCurrentName = document.getElementById('displayCurrentName');
 
         let currentUser = null;
+
+        // === 1. Login State Logic (Header) ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('luna_is_logged_in');
+            const authSection = document.getElementById('authSection');
+
+            if (isLoggedIn === 'true' && authSection) {
+                authSection.innerHTML = `
+                    <button id="logoutBtn" class="text-purple-100 hover:text-white font-semibold text-sm">
+                        Logout <i class="fas fa-sign-out-alt ml-1"></i>
+                    </button>
+                `;
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('luna_is_logged_in');
+                    localStorage.removeItem('luna_user_name');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
         
-        // === 1. Updated: Check for Login Name OR Chat Name ===
-        // We now check 'luna_user_name' (from Login page) first
+        // === 2. Chat Username Logic ===
         let currentUsername = localStorage.getItem('luna_user_name') || localStorage.getItem('luna_username') || "";
 
         function checkUsername() {
@@ -135,15 +166,14 @@
             const name = nameInput.value.trim();
             if (name) {
                 currentUsername = name;
-                localStorage.setItem('luna_username', name); // Save to browser for guests
+                localStorage.setItem('luna_username', name); // Save local username
                 displayCurrentName.innerText = name;
                 usernameModal.classList.add('hidden');
                 startChat();
             }
         });
 
-        // === 2. Auth & Start ===
-        // Start by checking username, then auth
+        // === 3. Start Chat & Auth ===
         checkUsername();
 
         function startChat() {
@@ -159,7 +189,7 @@
             });
         }
 
-        // === 3. Real-time Message Listener ===
+        // === 4. Real-time Message Listener ===
         function loadMessages() {
             const q = query(collection(db, "messages"), orderBy("createdAt"), limit(50));
 
@@ -179,7 +209,7 @@
             });
         }
 
-        // === 4. Render Message Bubble ===
+        // === 5. Render Message Bubble ===
         function displayMessage(msg) {
             if (!msg.createdAt) return;
 
@@ -208,7 +238,7 @@
             messagesList.appendChild(row);
         }
 
-        // === 5. Send Message ===
+        // === 6. Send Message ===
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = messageInput.value.trim();
@@ -219,7 +249,7 @@
                         text: text,
                         createdAt: serverTimestamp(),
                         uid: currentUser.uid,
-                        username: currentUsername // <--- Sends the logged-in name
+                        username: currentUsername
                     });
                     messageInput.value = "";
                 } catch (err) {
