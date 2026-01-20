@@ -11,32 +11,19 @@
 </head>
 <body class="flex flex-col min-h-screen text-gray-800">
 
-    <!-- HEADER -->
     <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
                 <i class="fas fa-moon text-2xl"></i>
                 <h1 class="text-2xl font-bold tracking-wide">Luna</h1>
             </a>
-            
-            <nav class="hidden md:flex items-center space-x-6 text-purple-100 font-semibold">
+            <nav class="hidden md:flex space-x-6 text-purple-100 font-semibold">
                 <a href="index.html" class="hover:text-white transition">Home</a>
                 <a href="calendar.html" class="hover:text-white transition">Calendar</a>
                 <a href="education.html" class="text-white border-b-2 border-white">Education</a>
                 <a href="support.html" class="hover:text-white transition">Support</a>
                 <a href="journal.html" class="hover:text-white transition">Journal</a>
-                
-                <!-- Login/Logout Section -->
-                <div id="authSection" class="ml-4">
-                    <a href="login.html" class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-gray-100 transition shadow-sm text-sm">
-                        Login
-                    </a>
-                </div>
             </nav>
-
-            <div class="md:hidden">
-                <i class="fas fa-bars text-xl"></i>
-            </div>
         </div>
     </header>
 
@@ -45,9 +32,7 @@
             <h2 class="text-3xl font-bold text-purple-800 mb-2">Education Hub</h2>
             <p class="text-gray-600">The basics you deserve to know.</p>
         </div>
-
-        <div class="grid md:grid-cols-2 gap-8">
-            <!-- Article 1 -->
+<div class="grid md:grid-cols-2 gap-8">
             <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition flex flex-col border border-purple-50">
                 <div class="h-40 bg-purple-100 flex items-center justify-center">
                     <i class="fas fa-tint text-5xl text-purple-400"></i>
@@ -55,11 +40,10 @@
                 <div class="p-6 flex-grow">
                     <h3 class="font-bold text-xl text-gray-800 mb-2">The Menstrual Cycle 101</h3>
                     <p class="text-gray-600 text-sm mb-4">It's not just "bleeding". It's a 4-phase hormone cycle. Learn what happens in your body during the Follicular, Ovulatory, and Luteal phases.</p>
-                    <a href="#" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
+                    <a href="guide-cycle.html" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
                 </div>
             </article>
 
-            <!-- Article 2 -->
             <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition flex flex-col border border-purple-50">
                 <div class="h-40 bg-fuchsia-100 flex items-center justify-center">
                     <i class="fas fa-notes-medical text-5xl text-fuchsia-400"></i>
@@ -67,11 +51,10 @@
                 <div class="p-6 flex-grow">
                     <h3 class="font-bold text-xl text-gray-800 mb-2">Is This Normal?</h3>
                     <p class="text-gray-600 text-sm mb-4">Color, clots, and duration. What's healthy and when you should actually see a doctor (without feeling embarrassed).</p>
-                    <a href="#" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
+                    <a href="guide-normal.html" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
                 </div>
             </article>
             
-            <!-- Article 3 -->
             <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition flex flex-col border border-purple-50">
                 <div class="h-40 bg-indigo-100 flex items-center justify-center">
                     <i class="fas fa-prescription-bottle-alt text-5xl text-indigo-400"></i>
@@ -79,11 +62,10 @@
                 <div class="p-6 flex-grow">
                     <h3 class="font-bold text-xl text-gray-800 mb-2">Hygiene Products</h3>
                     <p class="text-gray-600 text-sm mb-4">Tampons vs. Pads vs. Cups. Pros, cons, and how to use them safely to avoid TSS.</p>
-                    <a href="#" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
+                    <a href="guide-products.html" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
                 </div>
             </article>
 
-            <!-- Article 4 -->
             <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition flex flex-col border border-purple-50">
                 <div class="h-40 bg-yellow-100 flex items-center justify-center">
                     <i class="fas fa-brain text-5xl text-yellow-500"></i>
@@ -91,32 +73,10 @@
                 <div class="p-6 flex-grow">
                     <h3 class="font-bold text-xl text-gray-800 mb-2">PMS & Mood</h3>
                     <p class="text-gray-600 text-sm mb-4">Why do you feel sad or angry? Understanding the drop in progesterone and how to manage the emotional wave.</p>
-                    <a href="#" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
+                    <a href="guide-pms.html" class="text-purple-600 font-bold text-sm hover:underline mt-auto">Read Guide &rarr;</a>
                 </div>
             </article>
         </div>
     </main>
-
-    <script>
-        // === HEADER AUTH LOGIC ===
-        document.addEventListener('DOMContentLoaded', () => {
-            const isLoggedIn = localStorage.getItem('luna_is_logged_in');
-            const authSection = document.getElementById('authSection');
-
-            if (isLoggedIn === 'true' && authSection) {
-                authSection.innerHTML = `
-                    <button onclick="logout()" class="text-purple-100 hover:text-white font-semibold text-sm">
-                        Logout <i class="fas fa-sign-out-alt ml-1"></i>
-                    </button>
-                `;
-            }
-        });
-
-        function logout() {
-            localStorage.removeItem('luna_is_logged_in');
-            localStorage.removeItem('luna_user_name');
-            window.location.href = 'index.html';
-        }
-    </script>
 </body>
 </html>
