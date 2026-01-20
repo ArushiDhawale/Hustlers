@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <!-- HEADER -->
+    <!-- HEADER (Consistent with Home Page) -->
     <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
@@ -131,17 +131,18 @@
 
         let currentUser = null;
 
-        // === 1. Login State Logic (Header) ===
+        // === 1. Header Auth Logic (Login/Logout) ===
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = localStorage.getItem('luna_is_logged_in');
             const authSection = document.getElementById('authSection');
 
             if (isLoggedIn === 'true' && authSection) {
                 authSection.innerHTML = `
-                    <button id="logoutBtn" class="text-purple-100 hover:text-white font-semibold text-sm">
+                    <button id="logoutBtn" class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold hover:bg-purple-50 transition shadow-sm text-sm">
                         Logout <i class="fas fa-sign-out-alt ml-1"></i>
                     </button>
                 `;
+                // Must use Event Listener inside module
                 document.getElementById('logoutBtn').addEventListener('click', () => {
                     localStorage.removeItem('luna_is_logged_in');
                     localStorage.removeItem('luna_user_name');
@@ -151,6 +152,7 @@
         });
         
         // === 2. Chat Username Logic ===
+        // Prioritize logged-in name, fallback to local storage guest name
         let currentUsername = localStorage.getItem('luna_user_name') || localStorage.getItem('luna_username') || "";
 
         function checkUsername() {
