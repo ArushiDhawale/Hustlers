@@ -19,7 +19,8 @@
     <header class="bg-purple-500 text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
-                <img src="logo.png" alt="Logo" class="h-8 w-auto">
+                <i class="fas fa-moon text-2xl"></i>
+                <h1 class="text-2xl font-bold tracking-wide">Luna</h1>
             </a>
              <nav class="hidden md:flex items-center space-x-6 text-purple-100 font-semibold">
                 <a href="index.html" class="hover:text-white transition">Home</a>
@@ -29,7 +30,6 @@
                 <a href="journal.html" class="text-white border-b-2 border-white">Journal</a>
 
                 <div id="authSection" class="ml-4">
-                    <!-- Auth state handled by Firebase -->
                     <span id="userStatus" class="text-xs font-bold bg-purple-600 px-3 py-1 rounded-full hidden">Loading...</span>
                 </div>
             </nav>
@@ -50,7 +50,7 @@
             </div>
 
             <div class="bg-white rounded-3xl shadow-2xl p-8 border border-purple-50 relative">
-                <!-- Loading Overlay for save actions -->
+                <!-- Loading Overlay -->
                 <div id="loadingOverlay" class="absolute inset-0 bg-white/50 z-10 hidden flex items-center justify-center rounded-3xl">
                     <i class="fas fa-spinner fa-spin text-purple-600 text-4xl"></i>
                 </div>
@@ -81,7 +81,7 @@
             </h3>
             
             <div id="entriesList" class="space-y-6">
-                <!-- Entries will be injected here by JS -->
+                <!-- Entries injected by journal.js -->
                 <div class="text-center py-10 text-gray-400">
                     <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
                     <p>Loading entries...</p>
@@ -110,250 +110,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- 1. Initialize Firebase ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyAvYE3ZApemLjdwUoHQaXLpdOO3Yu2FxOQ",
-          authDomain: "luna-1ec03.firebaseapp.com",
-          projectId: "luna-1ec03",
-          storageBucket: "luna-1ec03.firebasestorage.app",
-          messagingSenderId: "954083602003",
-          appId: "1:954083602003:web:cba02aabad304b69eb20a6",
-          measurementId: "G-NNV9QZ87VH"
-        };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        let currentUser = null;
-        const saveBtn = document.getElementById('saveBtn');
-
-        // --- 2. Auth Logic ---
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Auth failed:", error);
-                saveBtn.innerText = "AUTH ERROR";
-                document.getElementById('statusMsg').innerText = "Auth Error: " + error.message;
-                document.getElementById('statusMsg').classList.remove('opacity-0');
-            }
-        };
-
-        initAuth();
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                const status = document.getElementById('userStatus');
-                status.textContent = "Logged In";
-                status.classList.remove('hidden');
-                console.log("User authenticated:", user.uid);
-                
-                // Enable button
-                saveBtn.disabled = false;
-                saveBtn.innerText = "SAVE ENTRY";
-                saveBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                saveBtn.classList.add('bg-purple-600', 'hover:bg-purple-700', 'hover:scale-105', 'active:scale-95');
-
-                // Load Past Entries
-                loadEntries(user.uid);
-            } else {
-                currentUser = null;
-                saveBtn.disabled = true;
-                saveBtn.innerText = "CONNECTING...";
-            }
-        });
-
-        // --- 3. Save Logic ---
-        async function saveAndAnalyze() {
-            const statusMsg = document.getElementById('statusMsg');
-            
-            if (!currentUser) {
-                statusMsg.innerText = "Error: Not logged in yet.";
-                statusMsg.classList.remove('opacity-0');
-                return;
-            }
-
-            const title = document.getElementById('journalTitle').value;
-            const content = document.getElementById('journalContent').value;
-
-            if(!content.trim()) return alert("Write something first!");
-
-            // Show loading state
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            saveBtn.disabled = true;
-            loadingOverlay.classList.remove('hidden');
-            statusMsg.innerText = "Saving...";
-            statusMsg.classList.remove('opacity-0', 'text-red-500', 'text-green-500');
-
-            try {
-                // Save to: /artifacts/{appId}/users/{userId}/journal_entries
-                await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'journal_entries'), {
-                    title: title || "Untitled Entry",
-                    content: content,
-                    timestamp: serverTimestamp(),
-                    wordCount: content.trim().split(/\s+/).length,
-                    moodAnalysis: analyzeMood(content) 
-                });
-
-                // Success UI
-                const indicator = document.getElementById('saveIndicator');
-                indicator.classList.remove('hidden');
-                setTimeout(() => indicator.classList.add('hidden'), 3000);
-                
-                statusMsg.innerText = "Entry saved successfully!";
-                statusMsg.classList.add('text-green-500');
-
-                // Clear inputs
-                document.getElementById('journalTitle').value = '';
-                document.getElementById('journalContent').value = '';
-                document.getElementById('wordCount').innerText = '0';
-
-                // Check for comfort modal trigger
-                checkComfortTriggers(content);
-
-            } catch (error) {
-                console.error("Error adding document: ", error);
-                statusMsg.innerText = "Error: " + error.message;
-                statusMsg.classList.add('text-red-500');
-            } finally {
-                saveBtn.disabled = false;
-                loadingOverlay.classList.add('hidden');
-                
-                // Fade out status message after 3 seconds if successful
-                if (!statusMsg.innerText.includes("Error")) {
-                    setTimeout(() => {
-                         statusMsg.classList.add('opacity-0');
-                         statusMsg.classList.remove('text-green-500');
-                    }, 3000);
-                }
-            }
-        }
-
-        // Attach event listener safely (Replaces onclick)
-        saveBtn.addEventListener('click', saveAndAnalyze);
-
-
-        // --- 4. Load Entries Logic ---
-        function loadEntries(userId) {
-            const listContainer = document.getElementById('entriesList');
-            
-            // Create a query against the collection, ordered by timestamp
-            const q = query(
-                collection(db, 'artifacts', appId, 'users', userId, 'journal_entries'),
-                orderBy('timestamp', 'desc')
-            );
-
-            // Real-time listener
-            onSnapshot(q, (snapshot) => {
-                listContainer.innerHTML = ''; // Clear loading state or old list
-
-                if (snapshot.empty) {
-                    listContainer.innerHTML = `
-                        <div class="text-center py-10 bg-white rounded-3xl border border-dashed border-purple-200 text-gray-400">
-                            <i class="fas fa-feather-alt text-4xl mb-3 opacity-30"></i>
-                            <p>No entries yet. Write your first thought above!</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    // Handle timestamp which might be null immediately after write (latency compensation)
-                    const dateObj = data.timestamp ? data.timestamp.toDate() : new Date();
-                    
-                    const dateStr = dateObj.toLocaleDateString('en-US', { 
-                        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
-                    });
-                    const timeStr = dateObj.toLocaleTimeString('en-US', { 
-                        hour: '2-digit', minute: '2-digit' 
-                    });
-
-                    // Mood Badge Color
-                    const isDiscomfort = data.moodAnalysis === "Discomfort";
-                    const moodBadge = isDiscomfort 
-                        ? `<span class="bg-orange-100 text-orange-600 text-xs font-bold px-2 py-1 rounded-full"><i class="fas fa-heart-broken mr-1"></i> Discomfort</span>`
-                        : `<span class="bg-green-100 text-green-600 text-xs font-bold px-2 py-1 rounded-full"><i class="fas fa-smile mr-1"></i> Positive</span>`;
-
-                    const card = document.createElement('div');
-                    card.className = "bg-white p-6 rounded-2xl shadow-sm border border-purple-50 entry-card";
-                    card.innerHTML = `
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="text-xl font-bold text-purple-900">${escapeHtml(data.title)}</h4>
-                                <p class="text-xs text-gray-400 mt-1"><i class="far fa-clock mr-1"></i> ${dateStr} at ${timeStr}</p>
-                            </div>
-                            ${moodBadge}
-                        </div>
-                        <div class="text-gray-600 leading-relaxed whitespace-pre-wrap">${escapeHtml(data.content)}</div>
-                    `;
-                    listContainer.appendChild(card);
-                });
-            }, (error) => {
-                console.error("Error loading entries:", error);
-                listContainer.innerHTML = `<p class="text-red-400 text-center">Error loading entries.</p>`;
-            });
-        }
-
-        // --- Helper Functions ---
-
-        function escapeHtml(text) {
-            if (!text) return "";
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function analyzeMood(text) {
-            const triggers = ['pain', 'cramps', 'hurt', 'stress', 'sad', 'tired', 'heavy', 'bloated'];
-            const lowerText = text.toLowerCase();
-            return triggers.some(t => lowerText.includes(t)) ? "Discomfort" : "Neutral/Positive";
-        }
-
-        function checkComfortTriggers(content) {
-            const triggers = ['pain', 'cramps', 'hurt', 'stress', 'sad', 'tired', 'heavy', 'bloated'];
-            const lowerContent = content.toLowerCase();
-            
-            if(triggers.some(t => lowerContent.includes(t))) {
-                setTimeout(() => {
-                    openComfortModal();
-                }, 800);
-            }
-        }
-
-        // Real-time word count
-        document.getElementById('journalContent').addEventListener('input', function(e) {
-            const count = e.target.value.trim().split(/\s+/).length;
-            document.getElementById('wordCount').innerText = e.target.value.trim() === "" ? 0 : count;
-        });
-
-        // Make functions globally available for buttons
-        window.openComfortModal = function() {
-            const modal = document.getElementById('comfortModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        window.closeComfortModal = function() {
-            const modal = document.getElementById('comfortModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-    </script>
+    <!-- Link to External JS -->
+    <script type="module" src="journal.js"></script>
 </body>
 </html>
