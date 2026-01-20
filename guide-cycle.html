@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Menstrual Cycle 101 - Luna</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Nunito', sans-serif; background-color: #f9fafb; } 
+        .phase-card { transition: all 0.2s ease-in-out; }
+        .phase-card:hover { border-left-color: #9333ea; background-color: #faf5ff; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-700">
+
+    <header class="bg-white text-purple-900 shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2 group">
+                <i class="fas fa-moon text-2xl text-purple-600 group-hover:text-purple-700 transition"></i>
+                <h1 class="text-2xl font-bold tracking-wide group-hover:text-purple-700 transition">Luna</h1>
+            </a>
+            <nav class="hidden md:flex space-x-8 text-slate-500 font-medium text-sm">
+                <a href="index.html" class="hover:text-purple-600 transition">Home</a>
+                <a href="education.html" class="text-purple-600 font-bold">Education</a>
+                <a href="calendar.html" class="hover:text-purple-600 transition">Calendar</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-12 max-w-4xl">
+        
+        <div class="mb-8">
+            <a href="education.html" class="text-slate-400 hover:text-purple-600 text-sm font-semibold transition flex items-center">
+                <i class="fas fa-arrow-left mr-2 text-xs"></i> Back to Education Hub
+            </a>
+        </div>
+
+        <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-12">
+            
+            <header class="border-b border-gray-100 pb-8 mb-8">
+                <span class="text-purple-600 font-bold tracking-wider text-xs uppercase mb-2 block">Menstrual Health</span>
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">The Menstrual Cycle 101</h1>
+                <p class="text-lg text-slate-600 leading-relaxed font-light">
+                    The menstrual cycle is a natural monthly process in which the body prepares for pregnancy. It involves hormonal changes that regulate menstruation, ovulation, energy levels, mood, and overall well-being.
+                </p>
+                <div class="mt-4 flex items-center text-sm text-slate-400">
+                    <i class="far fa-clock mr-2"></i> Typical duration: 21–35 days
+                </div>
+            </header>
+
+            <div class="space-y-8">
+                
+                <h2 class="text-xl font-bold text-slate-900 mb-6">Cycle Phases</h2>
+
+                <section class="phase-card border-l-4 border-gray-200 pl-6 py-2">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-purple-800">Menstrual Phase</h3>
+                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wide mt-2 md:mt-0 w-fit">Days 1–5</span>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mt-4">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 uppercase mb-2">Physiology</h4>
+                            <ul class="text-slate-600 text-sm space-y-2 leading-relaxed">
+                                <li>The uterus sheds its lining, causing bleeding.</li>
+                                <li>Estrogen and progesterone levels are at their lowest.</li>
+                            </ul>
+                            <div class="mt-3 text-sm text-slate-500 italic">
+                                Common: Cramps, fatigue, low energy, mood sensitivity.
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                            <h4 class="text-sm font-bold text-purple-700 uppercase mb-2">Self-Care Protocol</h4>
+                            <ul class="text-slate-600 text-sm space-y-2">
+                                <li class="flex items-start"><i class="fas fa-bed text-purple-400 mt-1 mr-2 text-xs"></i> Prioritize rest and hydration.</li>
+                                <li class="flex items-start"><i class="fas fa-apple-alt text-purple-400 mt-1 mr-2 text-xs"></i> Consume iron-rich foods (spinach, dates).</li>
+                                <li class="flex items-start"><i class="fas fa-child text-purple-400 mt-1 mr-2 text-xs"></i> Gentle stretching or light yoga.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="phase-card border-l-4 border-gray-200 pl-6 py-2">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-purple-800">Follicular Phase</h3>
+                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wide mt-2 md:mt-0 w-fit">Days 1–13</span>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mt-4">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 uppercase mb-2">Physiology</h4>
+                            <ul class="text-slate-600 text-sm space-y-2 leading-relaxed">
+                                <li>Hormone levels begin to rise.</li>
+                                <li>The body prepares an egg for release.</li>
+                            </ul>
+                            <div class="mt-3 text-sm text-slate-500 italic">
+                                Common: Improved energy, clear thinking, increased motivation.
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                            <h4 class="text-sm font-bold text-purple-700 uppercase mb-2">Self-Care Protocol</h4>
+                            <ul class="text-slate-600 text-sm space-y-2">
+                                <li class="flex items-start"><i class="fas fa-briefcase text-purple-400 mt-1 mr-2 text-xs"></i> Excellent time to start new projects.</li>
+                                <li class="flex items-start"><i class="fas fa-utensils text-purple-400 mt-1 mr-2 text-xs"></i> Focus on balanced, protein-rich meals.</li>
+                                <li class="flex items-start"><i class="fas fa-running text-purple-400 mt-1 mr-2 text-xs"></i> Engage in light to moderate exercise.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="phase-card border-l-4 border-gray-200 pl-6 py-2">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-purple-800">Ovulation Phase</h3>
+                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wide mt-2 md:mt-0 w-fit">Around Day 14</span>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mt-4">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 uppercase mb-2">Physiology</h4>
+                            <ul class="text-slate-600 text-sm space-y-2 leading-relaxed">
+                                <li>An egg is released from the ovary.</li>
+                                <li>Fertility is at its peak.</li>
+                            </ul>
+                            <div class="mt-3 text-sm text-slate-500 italic">
+                                Common: High energy, confidence, social mood.
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                            <h4 class="text-sm font-bold text-purple-700 uppercase mb-2">Self-Care Protocol</h4>
+                            <ul class="text-slate-600 text-sm space-y-2">
+                                <li class="flex items-start"><i class="fas fa-tint text-purple-400 mt-1 mr-2 text-xs"></i> Stay highly hydrated.</li>
+                                <li class="flex items-start"><i class="fas fa-dumbbell text-purple-400 mt-1 mr-2 text-xs"></i> Handle higher intensity workouts.</li>
+                                <li class="flex items-start"><i class="fas fa-calendar-check text-purple-400 mt-1 mr-2 text-xs"></i> Track ovulation if planning.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="phase-card border-l-4 border-gray-200 pl-6 py-2">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-purple-800">Luteal Phase</h3>
+                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wide mt-2 md:mt-0 w-fit">Days 15–28</span>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mt-4">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 uppercase mb-2">Physiology</h4>
+                            <ul class="text-slate-600 text-sm space-y-2 leading-relaxed">
+                                <li>Significant hormonal shifts occur.</li>
+                                <li>The body prepares for the next cycle.</li>
+                            </ul>
+                            <div class="mt-3 text-sm text-slate-500 italic">
+                                Common: PMS, mood swings, bloating, lower energy.
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                            <h4 class="text-sm font-bold text-purple-700 uppercase mb-2">Self-Care Protocol</h4>
+                            <ul class="text-slate-600 text-sm space-y-2">
+                                <li class="flex items-start"><i class="fas fa-ban text-purple-400 mt-1 mr-2 text-xs"></i> Reduce caffeine and sugar intake.</li>
+                                <li class="flex items-start"><i class="fas fa-carrot text-purple-400 mt-1 mr-2 text-xs"></i> Eat magnesium-rich foods.</li>
+                                <li class="flex items-start"><i class="fas fa-spa text-purple-400 mt-1 mr-2 text-xs"></i> Focus on mindfulness and rest.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </article>
+    </main>
+</body>
+</html>
