@@ -41,20 +41,7 @@
 
     <div class="fixed top-0 left-0 h-1 bg-gradient-to-r from-purple-400 to-pink-400 z-[60]" style="width: 45%;"></div>
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-purple-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="bg-purple-600 p-2 rounded-lg text-white"><i class="fas fa-moon"></i></div>
-                <h1 class="text-2xl font-bold tracking-tight text-purple-900">Luna</h1>
-            </a>
-            <nav class="hidden md:flex space-x-8 text-gray-500 font-bold text-sm">
-                <a href="#" class="hover:text-purple-600 transition">Calendar</a>
-                <a href="#" class="text-purple-600">Education</a>
-                <a href="#" class="hover:text-purple-600 transition">Support</a>
-                <a href="#" class="hover:text-purple-600 transition">Journal</a>
-            </nav>
-        </div>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <section class="relative overflow-hidden pt-16 pb-24 px-6">
         <div class="container mx-auto text-center relative z-10">
@@ -130,5 +117,6 @@
         <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Sisterhood of Luna • 2026</p>
     </footer>
 
+    <script src="loadNavbar.js"></script> 
 </body>
 </html>
