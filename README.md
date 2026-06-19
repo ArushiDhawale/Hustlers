@@ -1,4 +1,4 @@
-#Luna - Your Personal Cycle Guide
+Luna - Your Personal Cycle Guide
 
 Luna is a comprehensive web application designed to help women track their menstrual cycles, understand their inner rhythms, and manage their health. It combines smart tracking features with educational resources and a private journal, all powered by secure cloud storage.
 
